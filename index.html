@@ -16,6 +16,12 @@ flavor profiles popular in these regions including citrus, fresh herbs such
 as lavender and rosemary and carefully curated olive oils. All is enhanced
 with an exceptional selection of local vegetables and seasonally varying
 meats and seafood." />
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+
 <script type="text/javascript" src="https://use.typekit.net/ik/RBaaNoP6Xmh8lCmVT2B2bQA41iWooorBq7xvshnlOyCfe7G2fFHN4UJLFRbh52jhWD9Xw26hZc4yZQsKw2scwcIXZcmywQSDjUTWiaiaO1gTdcmyZew0jhNlOYgTdcmyZew0jhNlOeUzjhBC-eNDifU3-Ao8jAsRO1FUiABkZWF3jAF8OcFzdP37O1gTdcmyZew0SaBujW48Sagyjh90jhNlJ6U3ScNt-AuyOAozicIK2ABKSc8COAsTSagCjWq7fbKnMsMMeMI6MKG4fH3gIMMjfkMfH6qJtKGbMg62JMJ7fbRRHyMMeMX6MKG4fHvgIMMjgfMfH6qJCMIbMg65JMJ7fbKlMsMMeMj6MKG4fHtgIMMjIfMfH6qJK3IbMg6YJMJ7fbKwMsMMegI6MKG4fHqgIMMjffMfH6qJ76IbMg6PJMJ7fbK4MsMMeMq6MKG4fJGgIMMjIkMfH6qJteXbMs6IJMJ7fbR8dsMgeMt6MKG4f5ylIMIjgKMfH6qJEAXbMs6bJMJ7fbRcdsMgeMS6MKG4f5ilIMIjIPMfH6qJEcXbMs6JJMJ7fbRndsMgegJ6MKG4fOgoIMIjfPMfH6qJCWqbMs6QJMHbMi-gzEXB.js"></script>
 <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700normal,700italic|Playfair+Display+SC:400,400italic,700normal,700italic"/>
@@ -251,25 +257,48 @@ meats and seafood." />
         <h1 class="OT_title">Make a Reservation</h1>
         <h2 class="OT_subtitle">Powered By OpenTable</h2>
       </div>
-      <ul class="OT_list">
-        <li class="OT_day sqs-block-opentable">
-          <input name="startDate" id="datepicker" class="OT_searchDateField hasDatepicker" type="text" value="MM/DD/YYYY" autocomplete="off">
-        </li>
-        <li class="OT_time sqs-block-opentable">
-          <input name="ResTime" id="ResTime" class="OT_searchTimeField" type="text" value="7:00 PM" autocomplete="off">
-        </li>
-        <li class="OT_party sqs-block-opentable" style="margin-bottom: 24px">
-          <input name="PartySizeFake" id="PartySizeFake" class="OT_searchPartyField" type="text" value="2 People" autocomplete="off">
-        </li>
-        <li class="OT_submit" style="margin-top: 0">
-          <div id="OTButton" class="OTButton">
-            <a href="http://www.opentable.com/rest_profile.aspx?rid=150556&restref=150556" target="_blank" class="OT_Find_a_Table OT_Faux_Button">Find a Table</a>
+
+      <form>
+        <div class="row" id="form-row">
+          <div class="col-sm-4">
+            <select name="speed" class="form-control" id="speed">
+              <option>2 PEOPLE</option>
+              <option>3 PEOPLE</option>
+              <option>4 PEOPLE</option>
+              <option>5 PEOPLE</option>
+              <option>6 PEOPLE</option>
+            </select>
           </div>
-        </li>
-      </ul>
+          <div class="col-sm-4">
+            <input name="startDate" id="datepicker"  class="form-control" type="text" value="MM/DD/YYYY" autocomplete="off">
+          </div>
+          <div class="col-sm-4">
+            <select name="speed" class="form-control" id="speed">
+              <option>Slower</option>
+              <option>Slow</option>
+              <option selected="selected">Medium</option>
+              <option>Fast</option>
+              <option>Faster</option>
+            </select>
+          </div>
+        </div>
+        <div id="OTButton" class="OTButton">
+          <a href="http://www.opentable.com/rest_profile.aspx?rid=150556&restref=150556" target="_blank" class="OT_Find_a_Table OT_Faux_Button">Find a Table</a>
+        </div>
+
+      </form>
     </div>
-  </div>
-  <style type="text/css">
+    <script type="text/javascript">
+
+    $( function() {
+      // $("#time-picker").selectMenu();
+
+      $( "#datepicker" ).datepicker();
+    } );
+
+    </script>
+
+    <style type="text/css">
     /**
     * jQuery UI Datepicker Styling Overrides
     *
@@ -277,6 +306,17 @@ meats and seafood." />
     * so putting this CSS here allows us to style the datepicker while minimizing the chance that the styles will affect
     * other third-party usages of this datepicker.
     */
+
+    .picker-size{
+      border-radius: 0px;
+    }
+
+    #form-row{
+
+      padding-top: 30px;
+      padding-bottom: 30px;
+    }
+
     #ui-datepicker-div {
       display: none
     }
