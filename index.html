@@ -261,40 +261,131 @@ meats and seafood." />
       <form>
         <div class="row" id="form-row">
           <div class="col-sm-4">
-            <select name="speed" class="form-control" id="speed">
-              <option>2 PEOPLE</option>
-              <option>3 PEOPLE</option>
-              <option>4 PEOPLE</option>
-              <option>5 PEOPLE</option>
-              <option>6 PEOPLE</option>
+            <select name="sizepicker" class="form-control" id="sizepicker">
+              <option value='2' selected>2 PEOPLE</option>
+              <option value='3'>3 PEOPLE</option>
+              <option value='4'>4 PEOPLE</option>
+              <option value='5'>5 PEOPLE</option>
+              <option value='6'>6 PEOPLE</option>
             </select>
           </div>
           <div class="col-sm-4">
-            <input name="startDate" id="datepicker"  class="form-control" type="text" value="MM/DD/YYYY" autocomplete="off">
+            <input name="startDate" id="datepicker"  class="form-control" type="text" value="YYYY-MM-DD" autocomplete="off">
           </div>
           <div class="col-sm-4">
-            <select name="speed" class="form-control" id="speed">
-              <option>Slower</option>
-              <option>Slow</option>
-              <option selected="selected">Medium</option>
-              <option>Fast</option>
-              <option>Faster</option>
+            <select name="timepicker" class="form-control" id="timepicker">
             </select>
           </div>
         </div>
-        <div id="OTButton" class="OTButton">
-          <a href="http://www.opentable.com/rest_profile.aspx?rid=150556&restref=150556" target="_blank" class="OT_Find_a_Table OT_Faux_Button">Find a Table</a>
+        <div class="submit-button">
+          Find a Table
         </div>
 
       </form>
     </div>
     <script type="text/javascript">
-
+    var globalData;
     $( function() {
-      // $("#time-picker").selectMenu();
 
-      $( "#datepicker" ).datepicker();
-    } );
+      //default 2 people
+      getDataBySize(2);
+
+      function getDataBySize(size){
+        $.ajax({type:"GET"
+        , url:"http://api.inlineapps.io/bookingCapacities/-KuPzL0EQvygrJgDRv_f/-KuPzL1FGZd1eie7Xt0z?size=" + size
+        , headers:{"api_key":"XyeE4Pu8XgEt9dRjntwK9sdPvVLU"}}).done(function(data){
+          globalData = data;
+          // console.log("Data: " + JSON.stringify(globalData));
+          var startDate = globalData[0].date;
+          var endDate = globalData[globalData.length - 1].date;
+          // console.log(startDate + ' ' + endDate);
+          var preSelectedDate = getCurrentSelectedDate();
+
+          // console.log('preSelectedDate ' +preSelectedDate);
+          $( "#datepicker" ).datepicker( "option", "minDate", new Date(startDate) );
+          $( "#datepicker" ).datepicker( "option", "maxDate", new Date(endDate) );
+
+          //check whether the preSelectedDate exist in the selectable date
+          var selectedDate = startDate;
+          globalData.forEach((theData)=>{
+            if (theData.date === preSelectedDate){
+              selectedDate = preSelectedDate;
+            }
+          });
+
+          //set current date
+          $( "#datepicker" ).datepicker( "setDate", selectedDate );
+          onDateSelected(selectedDate);
+
+        });
+      }
+
+      $('.submit-button').click(function(){
+        var date = getCurrentSelectedDate();
+        var time = $("#timepicker").find(":selected").text();
+        var size = $("#sizepicker").find(":selected").val();
+        console.log(`submit size:${size} date:${date} time:${time}`);
+        submitReservation(size, date, time);
+      });
+
+      $( "#datepicker" ).datepicker({dateFormat: "yy-mm-dd", onSelect: function (dateText, inst) {
+        onDateSelected(dateText);
+      }});
+
+      $( "#sizepicker" ).change(function() {
+        $( "#sizepicker option:selected" ).each(function() {
+          console.log($(this ).text() + ' ' + $(this).val());
+          getDataBySize($(this).val());
+        });
+        // console.log("Handler for .change() called." );
+      });
+
+      function submitReservation(size, date, time){
+        
+      }
+
+      function getCurrentSelectedDate(){
+        return $.datepicker.formatDate('yy-mm-dd',$( "#datepicker" ).datepicker( "getDate" ));
+      }
+      function getDateString(date){
+        var day = date.getDate();
+        var monthIndex = date.getMonth();
+        var year = date.getFullYear();
+        return year + '-' + (monthIndex + 1) + '-' +day;
+      }
+      function onDateSelected(dateText){
+        console.log('select ' + dateText);
+        var index = findDataIndexFromDateText(dateText);
+        var prevSelectedTime = $("#timepicker").find(":selected").text();
+
+        //refresh the options in timepicker
+        $('#timepicker').empty();
+        globalData[index].times.forEach((time, index) =>{
+          var tag = prevSelectedTime === time ? '<option selected>' : '<option>';
+          $('#timepicker').append($('<option>', {
+            value: index,
+            text : time
+          }));
+        });
+
+        //try to keep the original selected time
+        $('#timepicker option').each(function(){
+          if ($(this).text() == prevSelectedTime){
+            $(this).attr("selected","selected");
+          }
+        });
+      }
+
+      function findDataIndexFromDateText(dateText){
+        var result = -1;
+        globalData.forEach((data, index)=>{
+          if (data.date === dateText){
+            result = index;
+          }
+        });
+        return result;
+      }
+    });
 
     </script>
 
@@ -307,6 +398,11 @@ meats and seafood." />
     * other third-party usages of this datepicker.
     */
 
+    .submit-button{
+      padding: 10px;
+      display: inline;
+      background-color: #222222;
+    }
     .picker-size{
       border-radius: 0px;
     }
